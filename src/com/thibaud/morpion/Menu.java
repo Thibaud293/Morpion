@@ -91,8 +91,10 @@ public class Menu {
 			//rend le menu invisible et créer la fenêtre Morpion
 			J1 = lblJoueur_1.getText();
 			J2 = lblJoueur_2.getText();
+			Joueur Joueur1 = new Joueur(J1);
+			Joueur Joueur2 = new Joueur(J2);
 			Menu.this.frame.setVisible(false);
-			Morpion morp = new Morpion(J1, J2);
+			Morpion window = new Morpion(Joueur1, Joueur2, Menu.this.frame);
 			
 			
 			

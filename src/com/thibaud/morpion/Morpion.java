@@ -6,6 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.ImageIcon;
@@ -14,13 +16,14 @@ import javax.swing.JButton;
 public class Morpion {
 
 	private JFrame frame;
-	private int joueur = 0;
-	private int W;
+	private int coup ;
 	private int cptO;
 	private int cptX;
-	private String J1;
-	private String J2;
-	private String nbcoups;
+	private Joueur J1;
+	private Joueur J2;
+	private String textWPopUp;
+	private JOptionPane PopUpFin ;
+	
 	
 	private JButton button_00;
 	private JButton button_10;
@@ -36,25 +39,16 @@ public class Morpion {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Morpion window = new Morpion("", "");
-					window.frame.setVisible(true);
-					
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	
 
 	/**
 	 * Create the application.
 	 */
-	public Morpion(String J1, String J2) {
+	public Morpion(Joueur J1, Joueur J2, JFrame F) {
+		this.J1 = J1;
+		this.J2 = J2;
 		initialize();
+		this.frame.setVisible(true);
 	}
 
 	/**
@@ -109,69 +103,84 @@ public class Morpion {
 		button_12.addActionListener(actionMorpion);
 		button_22.addActionListener(actionMorpion);
 		
-		//Remise à 0 des variables
-		W=0;
-		joueur=0;
-		cptX=0;
-		cptO=0;
+		PopUpFin = new JOptionPane();
+		cptO = 0;
+		cptX = 0;
+		coup = 0;
 		
 	}
 	
 	ActionListener actionMorpion = new ActionListener() {
 		public void actionPerformed(ActionEvent arg0) {
 			JButton btn = (JButton) arg0.getSource();
-			
-			joueur++;
-	        if(joueur%2==0)
+
+	        if(coup%2==0)
 	        {
 	            btn.setText("O");
 	            cptO++;
+	            testsWin();
+	            
+	            if(textWPopUp.equals("O")) {
+	            	PopUpFin.showMessageDialog(null,Morpion.this.J1.pseudo_joueur + " a gagné avec les "+"O"+" en "+cptO+" coups","information",PopUpFin.INFORMATION_MESSAGE);
+	            }
+	            else if(textWPopUp.equals("0")) {
+	            	PopUpFin.showMessageDialog(null,"égalité !","information",PopUpFin.INFORMATION_MESSAGE);
+	            }
 	        }
-	        else
+	        else if(coup%2==1)
 	        {
 	        	btn.setText("X");
 	        	cptX++;
+	        	testsWin();
+	        	
+	        	if(textWPopUp.equals("X")) {
+	            	PopUpFin.showMessageDialog(null,Morpion.this.J2.pseudo_joueur + " a gagné avec les "+"X"+" en "+cptX+" coups","information",PopUpFin.INFORMATION_MESSAGE);
+	            }
+	            else if(textWPopUp.equals("0")) {
+	            	PopUpFin.showMessageDialog(null,"égalité !","information",PopUpFin.INFORMATION_MESSAGE);
+	            }
 	        }
-	        
-	        W=testsWin();
-	        if(W==2) {
-	        	//Le joueur a gagné en "joueur" coups
-	        	//Récuperer une chaine de caractère en sortie des tests pour la renvoyer directement dans la fenêtre win
-	        }
-	        else if(joueur>=9) {
-	        	//Il y a une égalité
-	        }
-	        
-	        
-	        
+	        coup++;
 	
 		}
 	};
 	
-	private int testsWin() {
+	private void testsWin() {
 		
 		//Refaire tous les tests avec btn.getText;
 		//Je test la 1ère ligne horizontale
         if(button_00.getText().equals(button_10.getText()) && button_00.getText().equals(button_20.getText()) && !button_00.getText().equals("")) {
-        	//Vers fenêtre gagnée + nombre de coups
-        	if(button_00.getText().equals("X")) {
-        		
-        	}
-        	return(2);
+        	textWPopUp=button_00.getText();
         }
         //Je test la 2ème ligne horizontale
         else if(button_01.getText().equals(button_11.getText()) && button_01.getText().equals(button_21.getText()) && !button_01.getText().equals("")) {
-        	//Vers fenêtre gagnée + nombre de coups
-        	return(2);
+        	textWPopUp=button_01.getText();
+        	
         }
         //Je test la 3ème ligne horizontale
         else if(button_02.getText().equals(button_12.getText()) && button_02.getText().equals(button_22.getText()) && !button_02.getText().equals("")) {
-        	//Vers fenêtre gagnée + nombre de coups
-        	return(2);
+        	textWPopUp=button_02.getText();
         }
-        //finir de tester tous les lignes/colonnes/diagonales
-        else {
-        	return(7);
+        else if(button_00.getText().equals(button_01.getText()) && button_00.getText().equals(button_02.getText()) && !button_00.getText().equals("")) {
+        	textWPopUp=button_00.getText();
+        }
+        //Je test la 2ème ligne verticale
+        else if(button_10.getText().equals(button_11.getText()) && button_10.getText().equals(button_12.getText()) && !button_10.getText().equals("")) {
+        	textWPopUp=button_10.getText();
+        	
+        }
+        //Je test la 3ème ligne verticale
+        else if(button_20.getText().equals(button_21.getText()) && button_20.getText().equals(button_22.getText()) && !button_20.getText().equals("")) {
+        	textWPopUp=button_20.getText();
+        }
+        else if(button_00.getText().equals(button_11.getText()) && button_00.getText().equals(button_22.getText()) && !button_00.getText().equals("")) {
+        	textWPopUp=button_00.getText();
+        }
+        else if(button_20.getText().equals(button_11.getText()) && button_20.getText().equals(button_02.getText()) && !button_20.getText().equals("")) {
+        	textWPopUp=button_20.getText();
+        }
+        else if(!button_00.getText().equals("")&&!button_01.getText().equals("")&&!button_02.getText().equals("")&&!button_10.getText().equals("")&&!button_11.getText().equals("")&&!button_12.getText().equals("")&&!button_20.getText().equals("")&&!button_21.getText().equals("")&&!button_22.getText().equals("")) {
+        	textWPopUp="0";
         }
 	}
 	
